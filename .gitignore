@@ -117,7 +117,11 @@ async def liens(ctx):
 
 
 
-
+@bot.command()
+@commands.is_owner()
+async def pick(ctx):
+    ragarder = ["trash", "sciencetrash", "trashbandicout", "topito", "c'est dessin anime", "scienceetonante", "leotechmaker"]
+    await ctx.send(random.choice(regarder))
 
 
 
@@ -154,9 +158,37 @@ async def salut(ctx):
 
 
 
+@bot.tree.command()
+@app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
+async def addition(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
+    result = thing_to_say + thing_to_say2
+    await interaction.response.send_message(f"le resultat de {thing_to_say} plus {thing_to_say2} est de {result}")
 
 
 
+
+@bot.tree.command()
+@app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
+async def multiplication(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
+    result = thing_to_say * thing_to_say2
+    await interaction.response.send_message(f"le resultat de {thing_to_say} fois {thing_to_say2} est de {result}")
+
+
+
+@bot.tree.command()
+@app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
+async def division(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
+    result = thing_to_say / thing_to_say2
+    await interaction.response.send_message(f"le resultat de {thing_to_say} diviser par {thing_to_say2} est de {result}")
+
+
+
+
+@bot.tree.command()
+@app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
+async def soustraction(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
+    result = thing_to_say - thing_to_say2
+    await interaction.response.send_message(f"le resultat de {thing_to_say} moins {thing_to_say2} est de {result}")
 
 
 
@@ -180,4 +212,4 @@ async def ping(ctx):
 
 
 
-bot.run("token")
+bot.run("MTA2NTY5MzczNjU2ODM2NTEzNw.Gcvu02.zFNcAzhZpVH2UD37wtYyVrJpxrgRVaYy-4dSrU")
