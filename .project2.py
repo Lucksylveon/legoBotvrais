@@ -593,7 +593,6 @@ async def ping(ctx):
 	await ctx.reply(f'pong avec une latence de {round(bot.latency * 1000)}ms')
 
 
-#MTA2NTY5MzczNjU2ODM2NTEzNw.GzMMyz.W5HBDjKqjlcq0KP6jXVrJJErDbj3BGhvVab_b0
 
 
 @bot.command()
