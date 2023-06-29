@@ -606,15 +606,15 @@ async def ranktest(ctx, member: discord.Member = None):
         
         lvl = users[str(id)]['level']
         exp = users[str(id)]['experience']
-        expd = lvl*3
-        lvlf = lvl+1
-        expf = lvlf*3
+        expd = lvl ** 3
+        lvlf = lvl + 1
+        expf = lvlf ** 3
         expl = expf - expd
         usep = exp - expd
         enb = discord.Embed(title= "level", description="commande pour le niveaux", color=discord.Color.random())
         enb.add_field(name="le niveau", value=f"{lvl}")
-        enb.add_field(name="progression", value=f"{usep} / {expl}")
-        enb.add_field(name="experience", value=f"{exp}")
+        enb.add_field(name="progression", value=f"{usep} / {expl} xp")
+        enb.add_field(name="experience", value=f"{exp} xp total")
         
         
         await ctx.send(embed = enb)
