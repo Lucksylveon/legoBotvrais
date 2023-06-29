@@ -406,6 +406,227 @@ async def ping(ctx):
 	await ctx.reply(f'pong avec une latence de {round(bot.latency * 1000)}ms')
 
 
+@bot.tree.command()
+@app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
+async def power(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
+    result = thing_to_say ** thing_to_say2
+    await interaction.response.send_message(f"le resultat de {thing_to_say} a la puissance {thing_to_say2} est de {result}")
 
+
+
+import typing
+
+
+
+@bot.event
+async def on_message(message):
+    if message.author.bot == False:
+        with open('llevel.json', 'r') as f:
+            users = json.load(f)
+        
+        gain = [25, 30, 35, 40, 45, 50]
+        ajj = random.choice(gain)
+
+        await update_data(users, message.author)
+        await add_experience(users, message.author, ajj)
+        await level_up(users, message.author, message)
+
+        with open('llevel.json', 'w') as f:
+            json.dump(users, f)
+
+    await bot.process_commands(message)
+
+
+async def update_data(users, user):
+    if not f'{user.id}' in users:
+        users[f'{user.id}'] = {}
+        users[f'{user.id}']['experience'] = 0
+        users[f'{user.id}']['level'] = 1
+
+
+async def add_experience(users, user, exp):
+    users[f'{user.id}']['experience'] += exp
+
+
+async def level_up(users, user, message):
+    with open('llevel.json', 'r') as g:
+        levels = json.load(g)
+    experience = users[f'{user.id}']['experience']
+    lvl_start = users[f'{user.id}']['level']
+    lvl_end = int(experience ** (1 / 3))
+    if lvl_start < lvl_end:
+        await message.channel.send(f'{user.mention} tu as telement parler que tu est niveau: {lvl_end}')
+        users[f'{user.id}']['level'] = lvl_end
+
+
+  
+@bot.command()
+async def rank(ctx, member: discord.Member = None):
+    if not member:
+        id = ctx.message.author.id
+        with open('llevel.json', 'r') as f:
+            users = json.load(f)
+        
+
+        
+        lvl = users[str(id)]['level']
+        exp = users[str(id)]['experience']
+        enb = discord.Embed(title= "level", description="commande pour le niveaux", color=discord.Color.random())
+        enb.add_field(name="le niveau", value=f"{lvl}")
+        enb.add_field(name="experience", value=f"{exp}")
+        
+        await ctx.send(embed = enb)
+        
+    else:
+        id = member.id
+        with open('llevel.json', 'r') as f:
+            users = json.load(f)
+        lvl = users[str(id)]['level']
+        exp = users[str(id)]['experience']
+        await ctx.send(f'{member} a le niveau {lvl}!')
+        await ctx.send(f'sont xp est de {exp}')
+
+
+
+
+@bot.command()
+async def topxp(ctx, x=10):
+  with open('llevel.json', 'r') as f:
+    
+    users = json.load(f)
+    
+  leaderboard = {}
+  total=[]
+  
+  for user in list(users):
+    name = int(user)
+    total_amt = users[str(user)]['experience']
+    leaderboard[total_amt] = name
+    total.append(total_amt)
+
+    
+
+    
+
+  total = sorted(total,reverse=True)
+  
+
+  emb = discord.Embed(
+    title = f'Top {x} des plus haut niveau sur le serveur de legoeloi',
+    description = 'les plus haut niveau',
+    color=discord.Color.random()
+  )
+  
+  index = 1
+  for amt in total:
+    id_ = leaderboard[amt]
+    member = bot.get_user(id_)
+    
+    
+    emb.add_field(name = f'{index}: {member}', value = f'{amt}', inline=False)
+    
+    
+    if index == x:
+      break
+    else:
+      index += 1
+      
+  await ctx.send(embed = emb)
+
+
+
+
+@bot.command()
+async def level(ctx, x=10):
+  with open('llevel.json', 'r') as f:
+    
+    users = json.load(f)
+    
+  leaderboard = {}
+  total=[]
+  
+  for user in list(users):
+    name = int(user)
+    total_amt = users[str(user)]['level']
+    leaderboard[total_amt] = name
+    total.append(total_amt)
+
+    
+
+    
+
+  total = sorted(total,reverse=True)
+  
+
+  em = discord.Embed(
+    title = f'Top {x} des plus haut niveau sur le serveur de legoeloi',
+    description = 'les plus haut niveau',
+    color=discord.Color.random()
+  )
+  
+  index = 1
+  for amt in total:
+    id_ = leaderboard[amt]
+    member = bot.get_user(id_)
+    
+    
+    em.add_field(name = f'{index}: {member}', value = f'{amt}', inline=False)
+    
+    
+    if index == x:
+      break
+    else:
+      index += 1
+      
+  await ctx.send(embed = em)
+
+
+
+@bot.command()
+async def yo(ctx):
+	await ctx.reply("yo")
+
+
+
+@bot.command()
+async def ping(ctx):
+	await ctx.reply(f'pong avec une latence de {round(bot.latency * 1000)}ms')
+
+
+#MTA2NTY5MzczNjU2ODM2NTEzNw.GzMMyz.W5HBDjKqjlcq0KP6jXVrJJErDbj3BGhvVab_b0
+
+
+@bot.command()
+async def ranktest(ctx, member: discord.Member = None):
+    if not member:
+        id = ctx.message.author.id
+        with open('llevel.json', 'r') as f:
+            users = json.load(f)
+        
+
+        
+        lvl = users[str(id)]['level']
+        exp = users[str(id)]['experience']
+        expd = lvl*3
+        lvlf = lvl+1
+        expf = lvlf*3
+        expl = expf - expd
+        usep = exp - expd
+        enb = discord.Embed(title= "level", description="commande pour le niveaux", color=discord.Color.random())
+        enb.add_field(name="le niveau", value=f"{lvl}")
+        enb.add_field(name="progression", value=f"{usep} / {expl}")
+        enb.add_field(name="experience", value=f"{exp}")
+        
+        
+        await ctx.send(embed = enb)
+        
+    else:
+        id = member.id
+        with open('llevel.json', 'r') as f:
+            users = json.load(f)
+        lvl = users[str(id)]['level']
+        exp = users[str(id)]['experience']
+        await ctx.send(f'{member} a le niveau {lvl}!')
+        await ctx.send(f'sont xp est de {exp}')
 
 bot.run("TOKEN")
