@@ -420,21 +420,28 @@ import typing
 
 @bot.event
 async def on_message(message):
-    if message.author.bot == False:
-        with open('llevel.json', 'r') as f:
-            users = json.load(f)
+    
+        if message.author.bot == False:
+            
+             with open('llevel.json', 'r') as f:
+                users = json.load(f)
+                gain = [25, 30, 35, 40, 45, 50]
+                ajj = random.choice(gain)
         
-        gain = [25, 30, 35, 40, 45, 50]
-        ajj = random.choice(gain)
+                gaina = [75, 90, 105, 120, 135, 150]
+                ajja = random.choice(gaina)
 
-        await update_data(users, message.author)
-        await add_experience(users, message.author, ajj)
-        await level_up(users, message.author, message)
+                await update_data(users, message.author)
+                if message.author.guild_permissions.manage_channels == True:
+                    await add_experience(users, message.author, ajja)
+                else:
+                    await add_experience(users, message.author, ajj)
+                await level_up(users, message.author, message)
 
-        with open('llevel.json', 'w') as f:
-            json.dump(users, f)
+                with open('llevel.json', 'w') as f:
+                    json.dump(users, f)
 
-    await bot.process_commands(message)
+        await bot.process_commands(message)
 
 
 async def update_data(users, user):
