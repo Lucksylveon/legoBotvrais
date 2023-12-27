@@ -652,7 +652,52 @@ async def givexp(ctx, user, value: int):
 
 
 
+class Auto_role(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout = None)
+    
+    @discord.ui.button(label="test 1", style=discord.ButtonStyle.green)
+    async def test_1(self, interaction: discord.Interaction, Button: discord.ui.Button):
+        test_1_role = discord.utils.get(interaction.guild.roles, name="test 1")
 
+        if test_1_role in interaction.user.roles:
+            await interaction.user.remove_roles(test_1_role)
+            await interaction.response.send_message("le role test 1 vous a etait enlever", ephemeral=True)
+        else:
+
+            await interaction.user.add_roles(test_1_role)
+            await interaction.response.send_message("le role test 1, vous a etait donner", ephemeral= True)
+    
+    @discord.ui.button(label="test 2", style=discord.ButtonStyle.blurple)
+    async def test_2(self, interaction: discord.Interaction, Button: discord.ui.Button):
+        test_2_role = discord.utils.get(interaction.guild.roles, name="test 2")
+
+        if test_2_role in interaction.user.roles:
+            await interaction.user.remove_roles(test_2_role)
+            await interaction.response.send_message("vous avait plus le role test 2", ephemeral=True)
+        else:
+
+            await interaction.user.add_roles(test_2_role)
+            await interaction.response.send_message("le role test 2, vous a etait donner", ephemeral=True)
+    
+    @discord.ui.button(label="test 3", style=discord.ButtonStyle.red)
+    async def test_3(self, interaction: discord.Interaction, Button: discord.ui.Button):
+        test_3_role = discord.utils.get(interaction.guild.roles, name="test 3")
+
+        if test_3_role in interaction.user.roles:
+            await interaction.user.remove_roles(test_3_role)
+            await interaction.response.send_message("le role test 3 vous a etait enlever", ephemeral=True)
+        else:
+
+            await interaction.user.add_roles(test_3_role)
+            await interaction.response.send_message("le role test 3, vous a etait donner", ephemeral=True)
+        
+
+@bot.command()
+@commands.has_permissions(manage_channels=True)
+async def auto_roles(ctx):
+    rembed = discord.Embed(title= "auto role", description= "appuis pour avoir le role indiquer sur le bouton")
+    await ctx.send(embed = rembed, view = Auto_role())
 
 
 async def setup(bot):
