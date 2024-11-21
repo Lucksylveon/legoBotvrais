@@ -763,6 +763,45 @@ async def level(ctx, x=10):
   await ctx.send(embed = emb)
 
 
+
+async def Getindex(utilisateur: discord.Member):
+    with open('llevel.json', 'r') as f:
+
+        users = json.load(f)
+    lede = {}
+    toto = []
+    for user in list(users):
+        name = int(user)
+        total_amt = users[str(user)]['totalexp']
+        lede[total_amt] = name
+        toto.append(total_amt)
+
+    toto = sorted(toto,reverse=True)
+
+    index = 1
+    for amt in toto:
+        _id = lede[amt]
+        mem = bot.get_user(_id)
+
+        if mem == utilisateur:
+            return f"{index}/{len(toto)}"
+        else:
+            index +=1
+    
+    
+
+async def Test():
+    tab = ("yo", "reyo", "yoyoy")
+    index = 2
+    return f"{index}/{len(tab)}"
+
+
+@bot.command()
+async def teste(ctx):
+    le_retour = await Test()    
+    await ctx.send(le_retour)
+
+
 @bot.hybrid_command(name="levelancien", description="donne votre place dans le leaderboard")
 async def levelancient(ctx, x=10):
   with open('llevel.json', 'r') as f:
@@ -830,6 +869,7 @@ async def rank(ctx, member: discord.Member = None):
         membre= discord.Member.name
         image = ctx.author.avatar
         lvl = users[str(id)]['last_level']
+	pos = await Getindex(ctx.author)
         #exp = users[str(id)]['experience']
         total = users[str(id)]['totalexp']
         exp_prochain = ((int(lvl) + 1 ) / 0.1) ** 2
@@ -845,6 +885,7 @@ async def rank(ctx, member: discord.Member = None):
         enb.add_field(name="le niveau", value=f"{lvl}")
         enb.add_field(name="progression", value=f"{int(exp_tu_as)} / {int(exp_apres)} xp")
         enb.add_field(name="level suivant", value=f"{int(exp_apres - exp_tu_as)} xp", inline=False)
+	enb.add_field(name="ta position", value=f"{pos}")
         #enb.add_field(name="experience", value=f"{exp} xp total")
         
         if total !=0:
