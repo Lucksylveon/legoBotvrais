@@ -913,6 +913,106 @@ async def givexp(ctx, user, value: int):
     await ctx.send(f"{value} a etait ajouter a {user}")
     
 
+
+
+@bot.command()
+async def testrank(ctx, member: discord.Member = None):
+    if not member:
+        id = ctx.message.author.id
+        with open('llevel.json', 'r') as f:
+            users = json.load(f)
+
+        #position = level(index)
+
+     
+        #embre= discord.Member.name
+        #image = ctx.author.avatar
+        lvl = users[str(id)]['last_level']
+        #pos = await Getindex(ctx.author)
+        #exp = users[str(id)]['experience']
+        total = users[str(id)]['totalexp']
+        exp_prochain = ((int(lvl) + 1 ) / 0.1) ** 2
+        percent = total / exp_prochain * 100
+        exp_tu_as_eu = (int(lvl) / 0.1 ) ** 2
+        exp_apres = exp_prochain - exp_tu_as_eu
+        exp_tu_as = total - exp_tu_as_eu
+        position = await Getindex(ctx.author)
+        #exp_prochain = int(exp_prochain)
+        #rolec = ctx.author.role
+        color = f"{ctx.author.color}"
+        user_data = {  # Most likely coming from database or calculation
+            "name": ctx.author.display_name,  # The user's name
+            "xp": exp_tu_as,
+            "xpafter": exp_apres,
+            "next_level_xp": exp_prochain,
+            "level": lvl,
+            "percentage": percent,
+            "total": total,
+            "rank": position,
+        }
+
+        background = Editor(Canvas((934, 282), "#23272a"))
+        profile_picture = await load_image_async(str(ctx.author.avatar.url))
+        profile = Editor(profile_picture).resize((190, 190)).circle_image()
+
+        # For profile to use users profile picture load it from url using the load_image/load_image_async function
+        # profile_image = load_image(str(ctx.author.avatar_url))
+        # profile = Editor(profile_image).resize((150, 150)).circle_image()
+
+
+        poppins = Font.poppins(size=30)
+
+        background.rectangle((20, 20), 894, 242, "#2a2e35")
+        background.paste(profile, (50, 50))
+        background.ellipse((42, 42), width=206, height=206, outline="#43b581", stroke_width=10)
+        background.rectangle((260, 180), width=630, height=40, fill="#484b4e", radius=20)
+        background.bar(
+            (260, 180),
+            max_width=630,
+            height=40,
+            percentage=user_data["percentage"],
+            fill=color,
+            radius=20,
+        )       
+        background.text((270, 120), user_data["name"], font=poppins, color=color)
+        background.text(
+            (870, 125),
+            f"{user_data['xp']} / {user_data['xpafter']}",
+            font=poppins,
+            color="#00fa81",
+            align="right",
+        )
+
+        rank_level_texts = [
+            Text("position ", color="#00fa81", font=poppins),
+            Text(f"{user_data['rank']}", color="#1EAAFF", font=poppins),
+            Text("  exp ", color="#00fa81", font=poppins),
+            Text(f"{user_data['total']}", color="#1EAAFF", font=poppins),
+            Text("   Level ", color="#00fa81", font=poppins),
+            Text(f"{user_data['level']}", color="#1EAAFF", font=poppins),
+        ]       
+
+        background.multi_text((850, 30), texts=rank_level_texts, align="right")
+
+        file = discord.File(fp=background.image_bytes, filename="levelcard.png")
+        #await ctx.send(file=file)
+
+        if total !=0:
+            
+            await ctx.send(file=file)
+        else:
+            await ctx.send("vous n'avez pas d'exp commencer par parler dans les channel pour en accumuller")
+        
+    else:
+        id = member.id
+        with open('llevel.json', 'r') as f:
+            users = json.load(f)
+        lvl = users[str(id)]['last_level']
+        exp = users[str(id)]['totalexp']
+        await ctx.send(f'{member} a le niveau {lvl}!')
+        await ctx.send(f'sont xp est de {exp}')
+
+
 class Auto_role(discord.ui.View):
     def __init__(self):
         super().__init__()
