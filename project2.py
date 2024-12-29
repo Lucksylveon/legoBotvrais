@@ -49,18 +49,21 @@ discord.app_commands.tree
 
 totalm = discord.Guild._member_count
 
-status = ["avec legoeloi | .help", "discord | .help", "avec moi-meme | .help", "avec toi | .help", "avec Luck(ニンフィア) | .help", "ma vie de bot | .help", "avec Flovv | .help", "rien | .help"]
+#status = ["avec legoeloi | .help", "discord | .help", "avec moi-meme | .help", "avec toi | .help", "avec Luck(ニンフィア) | .help", "ma vie de bot | .help", "avec Flovv | .help", "rien | .help"]
 
 
 channeln = bot.get_channel(1111722478616715407)
 
 @tasks.loop(minutes = 0, seconds = 30)
 async def changeStatus():
+	streamer = random.choice(["Legoeloi faire des video", "Flovv jouer a Lord Mobille", "Luck(ニンフィア) me developper", "les membre chatter", "rien", "ma vie de bot", ".help"])
+
+    	await bot.change_presence(activity=discord.Streaming(name=streamer, url= "https://www.twitch.tv/botpersonaliserparkillian"))
 
 
 
-	game = discord.Game(random.choice(status))
-	await bot.change_presence(status = discord.Status.online, activity = game)
+	#game = discord.Game(random.choice(status))
+	#await bot.change_presence(status = discord.Status.online, activity = game)
 
 @tasks.loop(minutes= 5, seconds= 30)
 async def editChannel():
