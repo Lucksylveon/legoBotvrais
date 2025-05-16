@@ -647,7 +647,7 @@ async def on_message(message):
 
                 
                 with open('llevel.json', 'w') as f:
-                    json.dump(users, f)
+                    json.dump(users, f, sort_keys=True, indent=4)
         
         
 
