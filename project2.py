@@ -21,7 +21,7 @@ from discord.utils import find
 from datetime import datetime, timezone, timedelta
 
 
-bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
+bot = commands.Bot(command_prefix="legobot::", intents=discord.Intents.all())
 
 bot.remove_command("help")
 
@@ -54,18 +54,19 @@ totalm = discord.Guild._member_count
 
 channeln = bot.get_channel(1111722478616715407)
 
-@tasks.loop(minutes = 0, seconds = 30)
+@tasks.loop(minutes = 0, seconds = 40)
 async def changeStatus():
-	streamer = random.choice(["Legoeloi faire des video", "Flovv jouer a Lord Mobille", "Luck(ニンフィア) me developper", "les membre chatter", "rien", "ma vie de bot", ".help"])
+    onligne = await bot.fetch_guild(1008865119943524363, with_counts=True)
+    streamer = random.choice(["Legoeloi faire des video", "Flovv jouer a Lord Mobille", "Luck(ニンフィア) me developper", "discord", "rien", "ma vie de bot", "legobot::help", f"{onligne.approximate_member_count} membres"])
 
-    	await bot.change_presence(activity=discord.Streaming(name=streamer, url= "https://www.twitch.tv/botpersonaliserparkillian"))
+    await bot.change_presence(activity=discord.Streaming(name=streamer, url= "https://www.twitch.tv/botpersonaliserparkillian"))
 
 
 
 	#game = discord.Game(random.choice(status))
 	#await bot.change_presence(status = discord.Status.online, activity = game)
 
-@tasks.loop(minutes= 5, seconds= 30)
+@tasks.loop(minutes= 10, seconds= 30)
 async def editChannel():
     channeln = bot.get_channel(1111722478616715407)
     enligne = await bot.fetch_guild(1008865119943524363, with_counts=True)
@@ -73,22 +74,29 @@ async def editChannel():
 
 
 
+
+
+
 channel = (1008865119943524366)
 
 @bot.event
 async def on_member_join(member):
+    
     channel = bot.get_channel(1008865119943524366)
     image = discord.Member.display_avatar
     embed = discord.Embed(title = (member), description = "bienvenue a toi sur le serveur de legoeloi", color = 0xFFE033)
     embed.set_image(url=member.display_avatar)
 
     embed.add_field(name = "total des menbres", value = (member.guild.member_count))
+    embed.set_footer(text=member.guild.name, icon_url=member.guild.icon)
+    embed.timestamp = datetime.now()
     await channel.send(f"merci {member.mention}")
 
     await channel.send(embed= embed)
     guild = member.guild
     #channeln = bot.get_channel(1111722478616715407)
-    #await channeln.edit(name = f"total des membre: {member.guild.member_count}")
+    #   await channeln.edit(name = f"total des membre: {member.guild.member_count}")
+
 
 
 @bot.event
@@ -102,18 +110,56 @@ async def on_member_remove(member):
     #await channeln.edit(name = f"total des membre: {member.guild.member_count}")
 
 
+
+
+@bot.event
+async def on_message_delete(message: discord.Message):
+    chanlogs = bot.get_channel(1422990188635881675)
+    chanmess = message.channel
+    autheur = message.author
+    dateact = datetime.now()
+    fordat = dateact.strftime("%m/%d/%Y, %I:%M %p") #pourcent x c'est pour la date sa marche pas 
+    #iconserv = discord.Guild.icon
+    #iconservv = iconserv.url
+    dellogem = discord.Embed(title="supression d'un message \n", description=f"message de {autheur} poster dans <#{chanmess.id}>", color=discord.Color.random())
+
+    dellogem.add_field(name="le contenu : ", value=f"{message.content}", inline=False)
+    #dellogem.add_field(name="supprimer le : ", value=f"{fordat}")
+    dellogem.set_footer(text=message.guild.name, icon_url=message.guild.icon)
+    dellogem.timestamp = datetime.now()
+
+    await chanlogs.send(embed= dellogem)
+
+@bot.event
+async def on_message_edit(before: discord.Message, after: discord.message):
+    chanlogss = bot.get_channel(1422990188635881675)
+    chanmesss = before.channel
+    autheurs = before.author
+    dateacts = datetime.now()
+    fordats = dateacts.strftime("%m/%d/%Y, %I:%M %p") #pourcent x c'est pour la date sa marche pas 
+    editem = discord.Embed(title="edition d'un message \n", description=f"message de {autheurs} poster dans <#{chanmesss.id}>", color=discord.Color.random())
+
+    editem.add_field(name="avant : ", value=f"{before.content}", inline=False)
+    editem.add_field(name="apres : ", value=f"{after.content}", inline=False)
+    #editem.add_field(name="\n modifier le : ", value=f"{fordats}")
+    editem.set_footer(text=before.guild.name, icon_url=before.guild.icon)
+    editem.timestamp = datetime.now()
+
+    await chanlogss.send(embed= editem)
+
+
 @bot.command()
 async def help(ctx):
 	help_embed = discord.Embed(title="help commande de legobot", description="les commande pour acceder au chategorie de commande", color=discord.Color.random())
 
 	help_embed.add_field(name="legobot", value="je suis un bot pour le serveur de legoeloi creer par Luck(二ンフㇶア)", inline=False)
-	help_embed.add_field(name=".help", value="affiche cette commande", inline=False)
-	help_embed.add_field(name=".help_math", value="voir les commande qui font des calcule mathematique", inline=False)
-	help_embed.add_field(name=".help_info", value="affiche les commande regroupant plusieur info", inline=False)
-	help_embed.add_field(name=".help_time", value="pour les commande de date", inline=False)
-	help_embed.add_field(name=".help_basique", value="voir les commande simple et classique", inline=False)
-	help_embed.add_field(name=".help_modo", value="voir les commande de moderation fasable que par le staff", inline=False)
-	help_embed.add_field(name=".help_gestion", value="voir les commande pour gerer le serv fesable que par le staff", inline=False)
+	help_embed.add_field(name="legobot::help", value="affiche cette commande", inline=False)
+	help_embed.add_field(name="legobot::help_math", value="voir les commande qui font des calcule mathematique", inline=False)
+	help_embed.add_field(name="legobot::help_info", value="affiche les commande regroupant plusieur info", inline=False)
+	help_embed.add_field(name="legobot::help_time", value="pour les commande de date", inline=False)
+	help_embed.add_field(name="legobot::help_basique", value="voir les commande simple et classique", inline=False)
+	help_embed.add_field(name="legobot::help_modo", value="voir les commande de moderation fasable que par le staff", inline=False)
+	help_embed.add_field(name="legobot::help_gestion", value="voir les commande pour gerer le serv fesable que par le staff", inline=False)
     
     
 
@@ -126,7 +172,7 @@ async def help_math(ctx):
 	helpm_embed = discord.Embed(title="help commande de legobot", description="les commande de la chategorie math", color=discord.Color.random())
 
 	helpm_embed.add_field(name="legobot", value="je suis un bot pour le serveur de legoeloi creer par Luck(二ンフㇶア)", inline=False)
-	helpm_embed.add_field(name=".help_math", value="affiche cette commande", inline=False)
+	helpm_embed.add_field(name="legobot::help_math", value="affiche cette commande", inline=False)
 	helpm_embed.add_field(name="/multiplication", value="pour faire un multiplication", inline=False)
 	helpm_embed.add_field(name="/division", value="pour faire une division", inline=False)
 	helpm_embed.add_field(name="/addition", value="permet de faire une addition", inline=False)
@@ -140,11 +186,11 @@ async def help_info(ctx):
 	helpi_embed = discord.Embed(title="help commande de legobot", description="les commande de la chategorie info", color=discord.Color.random())
 
 	helpi_embed.add_field(name="legobot", value="je suis un bot pour le serveur de legoeloi creer par Luck(二ンフㇶア)", inline=False)
-	helpi_embed.add_field(name=".help_info", value="affiche les commande de cette chategorie", inline=False)
-	helpi_embed.add_field(name=".liens", value="envoie les liens des reseaux de legoeloi", inline=False)
-	helpi_embed.add_field(name=".modo", value="envoie un message pour les personne demandant a etre modo", inline=False)
-	helpi_embed.add_field(name=".majuscule", value="utiliser pour envoier un message en cas d'abus de majuscule", inline=False)
-	helpi_embed.add_field(name=".tm", value="envoie le monbre totale de menbre", inline=False)
+	helpi_embed.add_field(name="legobot::help_info", value="affiche les commande de cette chategorie", inline=False)
+	helpi_embed.add_field(name="legobot::liens", value="envoie les liens des reseaux de legoeloi", inline=False)
+	helpi_embed.add_field(name="legobot::modo", value="envoie un message pour les personne demandant a etre modo", inline=False)
+	helpi_embed.add_field(name="legobot::majuscule", value="utiliser pour envoier un message en cas d'abus de majuscule", inline=False)
+	helpi_embed.add_field(name="legobot::tm", value="envoie le monbre totale de menbre", inline=False)
 
 	await ctx.send(embed=helpi_embed)
 
@@ -154,7 +200,7 @@ async def help_time(ctx):
 	helpt_embed = discord.Embed(title="help commande de legobot", description="les commande de la chategorie time", color=discord.Color.random())
 
 	helpt_embed.add_field(name="legobot", value="je suis un bot pour le serveur de legoeloi creer par Luck(二ンフㇶア)", inline=False)
-	helpt_embed.add_field(name=".help_time", value="affiche les commande de cette chategorie", inline=False)
+	helpt_embed.add_field(name="legobot::help_time", value="affiche les commande de cette chategorie", inline=False)
 	helpt_embed.add_field(name="/temps", value="te donne la date et l'heure du moment", inline=False)
 	helpt_embed.add_field(name="/timestamp", value="te donne la valeur actuele du timestamp", inline=False)
 
@@ -166,11 +212,11 @@ async def help_basique(ctx):
 	helpb_embed = discord.Embed(title="help commande de legobot", description="les commande de la chategorie basique", color=discord.Color.random())
 
 	helpb_embed.add_field(name="legobot", value="je suis un bot pour le serveur de legoeloi creer par Luck(二ンフㇶア)", inline=False)
-	helpb_embed.add_field(name=".help_basique", value="affiche les commande de cette chategorie", inline=False)
-	helpb_embed.add_field(name=".ing", value="envoie ong ", inline=False)
-	helpb_embed.add_field(name=".salut", value="envoie salut", inline=False)
-	helpb_embed.add_field(name=".yo", value="repond yo", inline=False)
-	helpb_embed.add_field(name=".ping", value="repond pong avel le temps de l'attense", inline=False)
+	helpb_embed.add_field(name="legobot::help_basique", value="affiche les commande de cette chategorie", inline=False)
+	helpb_embed.add_field(name="legobot::ing", value="envoie ong ", inline=False)
+	helpb_embed.add_field(name="legobot::salut", value="envoie salut", inline=False)
+	helpb_embed.add_field(name="legobot::yo", value="repond yo", inline=False)
+	helpb_embed.add_field(name="legobot::ping", value="repond pong avel le temps de l'attense", inline=False)
 	helpb_embed.add_field(name="/test", value="une simple commande test", inline=False)
 	helpb_embed.add_field(name="/hi", value="repond hello", inline=False)
 
@@ -182,11 +228,11 @@ async def help_modo(ctx):
 	helpmo_embed = discord.Embed(title="help commande de legobot", description="les commande de la chategorie modo", color=discord.Color.random())
 
 	helpmo_embed.add_field(name="legobot", value="je suis un bot pour le serveur de legoeloi creer par Luck(二ンフㇶア)", inline=False)
-	helpmo_embed.add_field(name=".help_modo", value="affiche les commande de cette chategorie", inline=False)
-	helpmo_embed.add_field(name=".ban", value="pour bannir un membre", inline=False)
-	helpmo_embed.add_field(name=".kick", value="kick un membre pas sur du fonctionement", inline=False)
+	helpmo_embed.add_field(name="legobot::help_modo", value="affiche les commande de cette chategorie", inline=False)
+	helpmo_embed.add_field(name="legobot::ban", value="pour bannir un membre", inline=False)
+	helpmo_embed.add_field(name="legobot::kick", value="kick un membre pas sur du fonctionement", inline=False)
 	helpmo_embed.add_field(name="/dit", value="emvoier un message sous le non du bot", inline=False)
-	helpmo_embed.add_field(name=".message", value="envoie un message priver a un membre", inline=False)
+	helpmo_embed.add_field(name="legobot::message", value="envoie un message priver a un membre", inline=False)
 
 	await ctx.send(embed=helpmo_embed)
 
@@ -195,28 +241,102 @@ async def help_modo(ctx):
 async def help_gestion(ctx):
 	helpg_embed = discord.Embed(title="help commande de legobot", description="les commande de la chategorie gestion", color=discord.Color.random())
 	helpg_embed.add_field(name="legobot", value="je suis un bot pour le serveur de legoeloi creer par Luck(二ンフㇶア)", inline=False)
-	helpg_embed.add_field(name=".help_gestion", value="affiche les commande de cette chategorie", inline=False)
-	helpg_embed.add_field(name=".tchaname", value="renomer un channel textuelle", inline=False)
-	helpg_embed.add_field(name=".vchaname", value="changer le non d'un channel vocal", inline=False)
-	helpg_embed.add_field(name=".textsup", value="supprimer un channel textuelle", inline=False)
-	helpg_embed.add_field(name=".voicesup", value="supprimer un channel vocal", inline=False)
+	helpg_embed.add_field(name="legobot::help_gestion", value="affiche les commande de cette chategorie", inline=False)
+	helpg_embed.add_field(name="legobot::tchaname", value="renomer un channel textuelle", inline=False)
+	helpg_embed.add_field(name="legobot::vchaname", value="changer le non d'un channel vocal", inline=False)
+	helpg_embed.add_field(name="legobot::textsup", value="supprimer un channel textuelle", inline=False)
+	helpg_embed.add_field(name="legobot::voicesup", value="supprimer un channel vocal", inline=False)
 
 	await ctx.send(embed=helpg_embed)
 
 @bot.command()
 async def help_level(ctx):
-    helpn_emb = discord.Embed(titre="help command de legobot", description="les commande de la category level", color=discord.Color.random())
+    helpn_emb = discord.Embed(title="help command de legobot", description="les commande de la category level", color=discord.Color.random())
 
     helpn_emb.add_field(name="legobot", value="je suis un bot pour le serveur de legoeloi creer par Luck(二ンフㇶア)", inline=False)
-    helpn_emb.add_field(name=".help_level", value="affiche les commande de cette categorie", inline=False)
-    helpn_emb.add_field(name=".rank", value="affiche ton niveau est experience", inline=False)
-    helpn_emb.add_field(name=".rank <userid>", value="en fesant rank suivi de l'id d'un menbre tu peut voir son niveau", inline=False)
-    helpn_emb.add_field(name=".topxp", value="affiche le classement des menbre avec leur xp", inline=False)
-    helpn_emb.add_field(name=".level", value="affiche le classement des membre avec leur niveaux", inline=False)
+    helpn_emb.add_field(name="legobot::help_level", value="affiche les commande de cette categorie", inline=False)
+    helpn_emb.add_field(name="legobot::rank", value="affiche ton niveau est experience", inline=False)
+    helpn_emb.add_field(name="legobot::rank <userid>", value="en fesant rank suivi de l'id d'un menbre tu peut voir son niveau", inline=False)
+    helpn_emb.add_field(name="legobot::topxp", value="affiche le classement des menbre avec leur xp", inline=False)
+    helpn_emb.add_field(name="legobot::level", value="affiche le classement des membre avec leur niveaux", inline=False)
 
     await ctx.send(embed=helpn_emb)
 
+@bot.command()
+async def testchan(ctx):
+    chanlist = await bot.fetch_guild(1008865119943524363, with_counts=True)
+    listchan = len(list(chanlist.text_channels))
+    
+    await ctx.send(f"il y'a {listchan} channel")
 
+@bot.command()
+async def untest(ctx):
+    enbtest = discord.Embed(title="je test des ecrit", description="c'est des test", color=discord.Color.random())
+
+    enbtest.add_field(name="le test", value='\n```py\n\nimport datetime\n\nprint("hello word !")\n```', inline=False)
+    enbtest.add_field(name="le test", value="est fait", inline=False)
+
+    await ctx.send(embed=enbtest)
+
+
+@bot.command()
+async def uneAutreCommande(ctx):
+    ctx.send('cest une autre commande' )
+
+
+@bot.command()
+async def chaine(ctx, commande: str, texte: str, param1=None , param2=None, param3=None):
+    if commande == "upper":
+        texte = texte.upper()
+        await ctx.send(texte)
+    elif commande == "lower":
+        texte = texte.lower()
+        await ctx.send(texte)
+    elif commande == "len":
+        resultstrch = len(texte)
+        await ctx.send(resultstrch)
+    elif commande == "replace":
+        texte = texte.replace(param1, param2)
+        await ctx.send(texte)
+    elif commande == "index":
+        param1 = int(param1)
+        resultind = texte[param1]
+        await ctx.send(resultind)
+    elif commande == "split":
+        texte = texte.split(param1)
+        await ctx.send(texte)
+    elif commande == "replaceo":
+        param3 = int(param3)
+        texte = texte.replace(param1, param2, param3)
+        await ctx.send(texte)
+    elif commande == "remove":
+        texte = texte[:texte.index(param1)] + texte[texte.index(param1)+1:]
+        await ctx.send(texte)
+
+    else:
+        await ctx.send("commande pas reconue")
+
+
+
+
+@bot.command()
+async def info(ctx):
+    pid = os.getpid()
+    python_process = psutil.Process(pid)
+    memoryUse = python_process.memory_info()[0]/2.**20  # memory use in GB...I think
+    pourcent = python_process.memory_info()[0] * 100 / psutil.virtual_memory().total
+    memorytotal = psutil.virtual_memory().total / 2.**30
+    #bot_latency = round(self.bot.latency * 1000)
+    info_embed = discord.Embed(title="commande info", description="des information sur le bot", color=discord.Color.random())
+    info_embed.add_field(name="memory use", value=f"{memoryUse} Mo", inline=False)
+    info_embed.add_field(name="total ram", value=f"{memorytotal} Go", inline=False)
+    info_embed.add_field(name="pourcentage", value=f"{pourcent} %", inline=False)
+    info_embed.add_field(name="ping du bot", value=f"{round(bot.latency * 1000)} ms", inline=False)
+    await ctx.send(embed=info_embed)
+    #await ctx.send(f'memory use:, {memoryUse} go')
+    #await ctx.send(f"total {memorytotal} go")
+    #await ctx.send(f" pourcentage {pourcent} %")
+    #await ctx.send(f'pong avec une latence de {round(bot.latency * 1000)}ms')
 
 def check_if_it_is_me(interaction: discord.Interaction) -> bool:
     return interaction.user.id == 777223645038247946
@@ -231,13 +351,45 @@ async def only_for_me(interaction: discord.Interaction):
 async def visual(ctx):
 	await ctx.send("commande fait sur visual studio code")
 
-
+@bot.command()
+async def testguild(ctx):
+    guild_id = discord.Guild.id
+    
+    if message.Guild.id == 1008865119943524363:
+        await ctx.send("c'est le serv de eloi")
+    else:
+        await ctx.send("pas le serveur")
 
 @bot.command()
 async def pro(ctx):
     proprio = discord.Guild.owner
     vpro = bot.get_user(proprio)
     await ctx.send(f"le createur est {vpro}")
+
+@bot.command()
+async def clap(ctx, phrase: str):
+    phrase = phrase.strip()
+    phrase = phrase.upper()
+    phrase = phrase.replace(" ", ":clap:")
+    await ctx.send(f":clap:{phrase}:clap:")
+
+
+
+@bot.command()
+async def add(ctx, nb1: float, nb2: float):
+    resulte = nb1 + nb2
+    await ctx.send(f"sa fait {resulte}")
+
+
+@bot.command()
+async def dectobits(ctx, nonbredec: int):
+    bit_count = math.floor(math.log2(nonbredec)) + 1
+    await ctx.send(f"le nombre de bits pour stoquer {nonbredec} est de {bit_count} bits")
+    await ctx.send("grace a math.floor(math.log2(leNomnre)) + 1 ")
+
+
+
+
 
 @bot.command()
 async def toilete(ctx):
@@ -254,6 +406,20 @@ async def choix(ctx, *args):
     finale = (random.choice(args))
     await ctx.send(f"le choix est {finale}")
 
+@bot.command()
+async def insta_cest_des_connard(ctx):
+    await ctx.send("oui c'est des fils de putes qui savent rien faire ")
+
+
+
+@bot.command()
+async def timea(ctx):
+    await ctx.send(time.strftime("%b %a %I %p "))
+
+@bot.command()
+async def debug(ctx, unecommand):
+    #result = pdb.run(unecommand)      
+    await ctx.send(result)
 
 
 @bot.tree.command()
@@ -262,23 +428,32 @@ async def test(interaction: discord.Interaction):
     await interaction.response.send_message("hello")
 
 @bot.event
-async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
+async def on_raw_reaction_add(payload):
     
     
     message_id = payload.message_id
     
-    if message_id == 1191049689802477650:
+    if message_id == 1335638326543257752:
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g : g.id == guild_id, bot.guilds)
-        if payload.emoji.name == ":Syn:":
-            role = discord.utils.get(payload.member.roles, name="test 4")
-        
+        #roleee = discord.utils.get(guild.roles, name="marchepas")
+        #member = discord.utils.find(lambda m : m.id == payload.user_id, guild.members)
+        if payload.emoji.name == "clap":
             member = discord.utils.find(lambda m : m.id == payload.user_id, guild.members)
-            if member is not None:
-                await payload.member.add_roles(role)
-            else:
-                print("user pas trouver")
+            #roleee = discord.utils.get(guild.roles, name="marchepas")
+            await member.add_roles(1335658621085810688)
+            
         
+        #if roleee is not None:
+            #member = discord.utils.find(lambda m : m.id == payload.user_id, guild.members)
+            #if member is not None:
+                #await member.add_roles(roleee)
+            #else:
+                #print("menbre pas trouver")
+        #else:
+            #print("role pas trouvé")
+
+
 
 
 
@@ -293,36 +468,52 @@ async def liens(ctx):
 	await ctx.send(embed = embed)
 
 
+
 @bot.command()
 async def modo(ctx):
 	await ctx.send("pas la peine de demander a etre modo on ne demande pas les droit d'etre modo se sont les droit de modo qui vienne a toi")
 
 @bot.command()
 @commands.is_owner()
-async def spam(ctx, member: discord.Member, value: int):
+async def spam(ctx, spamed: discord.Member or discord.Role, value: int):
+    
     i = 1
     while(i <= value):
-        await ctx.send(f"{member.mention} {i} sur {value}")
+        await ctx.send(f"{spamed.mention} {i} sur {value}")
         i = i+1 
 
     
 @bot.command()
 @commands.is_owner()
 async def pick(ctx):
-    regarder = ["trash",  "c'est dessin anime", "scienceetonante", "leotechmaker"]
+    regarder = ["c'est dessin anime1",  "c'est dessin anime", "c'est dessin anime2","scienceetonante", "scienceetonante2", "scienceetonante1","leotechmaker", "leotechmaker2", "leotechmaker1", "polo","pickdeux", "peut importe", "c'est dessin anime3", "leo techmaker3", "pick", "pick", "pick", "pick", "scienceetonante3", "peux importe", "docseven"]
     await ctx.send(random.choice(regarder))
 
 
 @bot.command()
 @commands.is_owner()
+async def pickdeux(ctx):
+    regardedr = ["c'est dessin anime1",  "c'est dessin anime", "c'est dessin anime2","scienceetonante", "scienceetonante2", "scienceetonante1","leotechmaker", "leotechmaker2", "leotechmaker1", "polo","picktrois", "autre", "c'est dessin anime", "leotechmaker", "pick", "pick", "pick", "pick", "scienceetonante", "peux importe", "docseven"]
+    await ctx.send(random.choice(regardedr))
+
+@bot.command()
+@commands.is_owner()
 async def pickspecial(ctx):
-	regarders = ["trash", "c'est dessin anime", "scienceetonante", "leotechmaker", "docseven", "polo", "pierrecroce", "ben", "code lyoko"]
+	regarders = ["c'est dessin anime", "scienceetonante", "leotechmaker", "docseven", "polo", "pierrecroce", "ben", "code lyoko"]
 	await ctx.send(random.choice(regarders))
+
+
+@bot.command()
+@commands.is_owner()
+async def picktrois(ctx):
+    regarder = ["c'est dessin anime1",  "c'est dessin anime", "c'est dessin anime2","scienceetonante", "scienceetonante2", "scienceetonante1","leotechmaker", "leotechmaker2", "leotechmaker1", "polo","choix avec 3 de chaque 2 pick et trash", "polo1", "codelyoko", "docseven", "c'est dessin anime", "peux inporte", "scienceetonante", "pick", "leotechmaker", "pick"]
+    await ctx.send(random.choice(regarder))
+
 
 @bot.command()
 @commands.is_owner()
 async def poloc(ctx):
-	regarders = ["stumble", "fall guy", "mario maker", "mario partt", "roblox", "splix.io", "sliter.io", "agario.io", "clustertruck", "housse flipper", "geometry dash", "minecraft", "ramdom"]
+	regarders = ["fall guy", "mario maker", "mario partt", "roblox", "splix.io", "sliter.io", "agario.io", "clustertruck", "housse flipper", "geometry dash", "minecraft", "ramdom"]
 	await ctx.send(random.choice(regarders))
 
 @bot.command()
@@ -362,6 +553,7 @@ async def clear(ctx, amount=2):
 @bot.command()
 async def majuscule(ctx):
 	await ctx.send("dans la vie tu parle pas en criant ici c'est pareille tu evite l'abus de majuscule merci")
+
 
 
 """
@@ -471,6 +663,8 @@ async def tt(ctx):
     # Formater l'heure de Tokyo avec les noms en japonais
     heure_formatee = "{}{}日 {}".format(nom_mois_japonais, heure_tokyo.day, nom_jour_semaine_japonais)
     await ctx.send(f"a tokyo on est le: {ye}年{heure_formatee} a {hmfor} ")
+    frtem = time.strftime("%b %a %I %p ")
+    await ctx.send(f"est en france {frtem}")
 
 
 
@@ -516,6 +710,14 @@ async def hi(interaction: discord.Interaction):
 @bot.tree.command(name="hello")
 async def hello(interaction: discord.Interaction):
 	await interaction.response.send_message(f"hello {interaction.user.mention} c'est une slash command")
+
+
+
+@bot.tree.command(name="badge")
+async def hello(interaction: discord.Interaction):
+	await interaction.response.send_message(f"coucou {interaction.user.mention} c'est pour activer le badge")
+
+
 
 
 @bot.tree.command()
@@ -578,40 +780,41 @@ async def dit(interaction: discord.Interaction, thing_to_say: str):
 
 @bot.tree.command()
 @app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
-async def multiplication(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
-    result = thing_to_say * thing_to_say2
+async def multiplication(interaction: discord.Interaction, thing_to_say: float, thing_to_say2: float):
+    result = float(thing_to_say) * float(thing_to_say2)
     await interaction.response.send_message(f"le resultat de {thing_to_say} fois {thing_to_say2} est de {result}")
 
 
 
 @bot.tree.command()
 @app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
-async def division(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
-    result = thing_to_say / thing_to_say2
+async def division(interaction: discord.Interaction, thing_to_say: float, thing_to_say2: float):
+    result = float(thing_to_say) / float(thing_to_say2)
     await interaction.response.send_message(f"le resultat de {thing_to_say} diviser par {thing_to_say2} est de {result}")
 
 
 @bot.tree.command()
 @app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
-async def addition(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
-    result = thing_to_say + thing_to_say2
+async def addition(interaction: discord.Interaction, thing_to_say: float, thing_to_say2: float):
+    result = float(thing_to_say) + float(thing_to_say2)
     await interaction.response.send_message(f"le resultat de {thing_to_say} plus {thing_to_say2} est de {result}")
 
 
 
 @bot.tree.command()
 @app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
-async def soustraction(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
-    result = thing_to_say - thing_to_say2
+async def soustraction(interaction: discord.Interaction, thing_to_say: float, thing_to_say2: float):
+    result = float(thing_to_say) - float(thing_to_say2)
     await interaction.response.send_message(f"le resultat de {thing_to_say} moins {thing_to_say2} est de {result}")
 
 
 
 @bot.tree.command()
 @app_commands.describe(thing_to_say = "nonbre 1", thing_to_say2 = "nonbre 2")
-async def power(interaction: discord.Interaction, thing_to_say: int, thing_to_say2: int):
-    result = thing_to_say ** thing_to_say2
-    await interaction.response.send_message(f"le resultat de {thing_to_say} a la puissance {thing_to_say2} est de {result}")
+async def power(interaction: discord.Interaction, thing_to_say: float, thing_to_say2: float):
+    result = float(thing_to_say) ** float(thing_to_say2)
+    bit_count = math.floor(math.log2(result)) + 1
+    await interaction.response.send_message(f"le resultat de {thing_to_say} a la puissance {thing_to_say2} est de {result} et le nombre de bits et de {bit_count} bits")
 
 
 @bot.event
@@ -639,7 +842,7 @@ async def on_message(message):
                 
                 
             
-                if message.content.startswith('.'):
+                if message.content.startswith('legobot::'):
                     await add_experience(users, message.author, 0)
                 else:
                     await add_experience(users, message.author, ajj)
@@ -706,7 +909,7 @@ async def level_up(users, user, message):
 
 
 @bot.hybrid_command(name="level", description="donne le classement")
-async def level(ctx, x=10):
+async def level(ctx):
   with open('llevel.json', 'r') as f:
     
     users = json.load(f)
@@ -740,7 +943,7 @@ async def level(ctx, x=10):
   
 
   emb = discord.Embed(
-    title = f'Top {x} des plus haut niveau sur le serveur de legoeloi',
+    title = f'Top 10 des plus haut niveau sur le serveur de legoeloi',
     description = 'les plus haut niveau',
     color=discord.Color.random()
   )
@@ -758,13 +961,12 @@ async def level(ctx, x=10):
     
     
     
-    if index == x:
+    if index == 10:
       break
     else:
       index += 1
       
   await ctx.send(embed = emb)
-
 
 
 async def Getindex(utilisateur: discord.Member):
@@ -787,7 +989,7 @@ async def Getindex(utilisateur: discord.Member):
         mem = bot.get_user(_id)
 
         if mem == utilisateur:
-            return f"{index}/{len(toto)}"
+            return f"{index} / {len(toto)}"
         else:
             index +=1
     
@@ -866,13 +1068,13 @@ async def rank(ctx, member: discord.Member = None):
         with open('llevel.json', 'r') as f:
             users = json.load(f)
 
-        
+        #position = level(index)
 
      
         membre= discord.Member.name
         image = ctx.author.avatar
         lvl = users[str(id)]['last_level']
-	pos = await Getindex(ctx.author)
+        pos = await Getindex(ctx.author)
         #exp = users[str(id)]['experience']
         total = users[str(id)]['totalexp']
         exp_prochain = ((int(lvl) + 1 ) / 0.1) ** 2
@@ -888,7 +1090,7 @@ async def rank(ctx, member: discord.Member = None):
         enb.add_field(name="le niveau", value=f"{lvl}")
         enb.add_field(name="progression", value=f"{int(exp_tu_as)} / {int(exp_apres)} xp")
         enb.add_field(name="level suivant", value=f"{int(exp_apres - exp_tu_as)} xp", inline=False)
-	enb.add_field(name="ta position", value=f"{pos}")
+        enb.add_field(name="ta position", value=f"{pos}")
         #enb.add_field(name="experience", value=f"{exp} xp total")
         
         if total !=0:
@@ -908,17 +1110,6 @@ async def rank(ctx, member: discord.Member = None):
 
 
 @bot.command()
-async def givexp(ctx, user, value: int):
-    with open('llevel.json', 'r') as f:
-        users = json.load(f)
-    users[f'{user}']['experience'] += value
-    
-    await ctx.send(f"{value} a etait ajouter a {user}")
-    
-
-
-
-@bot.command()
 async def testrank(ctx, member: discord.Member = None):
     if not member:
         id = ctx.message.author.id
@@ -935,11 +1126,12 @@ async def testrank(ctx, member: discord.Member = None):
         #exp = users[str(id)]['experience']
         total = users[str(id)]['totalexp']
         exp_prochain = ((int(lvl) + 1 ) / 0.1) ** 2
-        percent = total / exp_prochain * 100
+        #percent = total / exp_prochain * 100
         exp_tu_as_eu = (int(lvl) / 0.1 ) ** 2
         exp_apres = exp_prochain - exp_tu_as_eu
         exp_tu_as = total - exp_tu_as_eu
         position = await Getindex(ctx.author)
+        percent = (exp_tu_as / exp_apres) * 100
         #exp_prochain = int(exp_prochain)
         #rolec = ctx.author.role
         color = f"{ctx.author.color}"
@@ -1016,6 +1208,15 @@ async def testrank(ctx, member: discord.Member = None):
         await ctx.send(f'sont xp est de {exp}')
 
 
+
+
+
+
+
+
+
+
+
 class Auto_role(discord.ui.View):
     def __init__(self):
         super().__init__()
@@ -1064,12 +1265,36 @@ async def auto_roles(ctx):
     await ctx.send(embed = rembed, view = Auto_role())
 
 
+"""
+leaderboard = {}
+total=[]
+    for user in list(users):
+        name = int(user)
+        total_amt = users[str(user)]['totalexp']
+        total_amt2 = users[str(user)]['level']
+        leaderboard[total_amt] = name
+        total.append(total_amt)
 
-        
+    total = sorted(total,reverse=True)
+
+    index = 1
+    for amt in total:
+        id_ = leaderboard[amt]
+    
+        member = bot.get_user(id_)
+
+        if ctx.author = member:
+            position = index
+        else:
+            index += 1
+"""
 
 
 async def setup(bot):
     await bot.add_cog(Pong(bot))
+
+
+bot.run(token)
 
 
 #ancient 
@@ -1782,3 +2007,4 @@ async def setup(bot):
 
 
 bot.run(token)
+
