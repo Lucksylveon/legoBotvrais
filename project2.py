@@ -284,6 +284,19 @@ async def untest(ctx):
 
     await ctx.send(embed=enbtest)
 
+@bot.command()
+async def userinfo(ctx, idmenbre: discord.User):
+    infoem = discord.Embed(title=f"information de {idmenbre.display_name}", description=f"info de {idmenbre.display_name}: ({idmenbre.name})", color=discord.Color.random())
+
+    infoem.set_thumbnail(url=f"{idmenbre.avatar}")
+    infoem.add_field(name="mention", value=f"{idmenbre.mention}", inline=True)
+    infoem.add_field(name="id :", value=f"{idmenbre.id}", inline=True)
+    infoem.add_field(name="creer le :", value=f"{idmenbre.created_at}")
+
+    await ctx.send(embed=infoem)
+
+    #await ctx.send(f"user name : {idmenbre.name} \n display name : {idmenbre.display_name} \n creer le : {idmenbre.created_at}")
+
 
 @bot.command()
 async def uneAutreCommande(ctx):
@@ -2013,5 +2026,6 @@ async def setup(bot):
 
 
 bot.run(token)
+
 
 
