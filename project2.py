@@ -836,6 +836,12 @@ async def power(interaction: discord.Interaction, thing_to_say: float, thing_to_
     await interaction.response.send_message(f"le resultat de {thing_to_say} a la puissance {thing_to_say2} est de {result} et le nombre de bits et de {bit_count} bits")
 
 
+@bot.command()
+async def char(ctx, number: int):
+    await ctx.send(f"le nombre {number} de valeur hexadecimal {number:0x} et binaire {number:0b} correspond en unicode a {number:0c}")
+
+
+
 @bot.event
 async def on_message(message):
     
@@ -2026,6 +2032,7 @@ async def setup(bot):
 
 
 bot.run(token)
+
 
 
 
