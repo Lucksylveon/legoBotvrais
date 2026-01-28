@@ -840,6 +840,11 @@ async def power(interaction: discord.Interaction, thing_to_say: float, thing_to_
 async def char(ctx, number: int):
     await ctx.send(f"le nombre {number} de valeur hexadecimal {number:0x} et binaire {number:0b} correspond en unicode a {number:0c}")
 
+@bot.command()
+async def unitodeci(ctx, char: str):
+    value = ord(char)
+    await ctx.send(f"valeur du caractere {char} est {value} en decimal {value:0X} en hexadecimal et {value:0b} en binaire")
+
 
 
 @bot.event
@@ -2032,6 +2037,7 @@ async def setup(bot):
 
 
 bot.run(token)
+
 
 
 
