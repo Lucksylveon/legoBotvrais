@@ -845,6 +845,19 @@ async def unitodeci(ctx, char: str):
     value = ord(char)
     await ctx.send(f"valeur du caractere {char} est {value} en decimal {value:0X} en hexadecimal et {value:0b} en binaire")
 
+@bot.command()
+async def unitodecis(ctx, chaine: str):
+    tabu = []
+    for letter in chaine:
+        tabu.append(ord(letter))
+    await ctx.send(tabu)
+
+@bot.command()
+async def decode(ctx, *, nombres):
+    texte = "".join(chr(int(n)) for n in nombres.split())
+    await ctx.send(texte)
+
+
 
 
 @bot.event
@@ -2037,6 +2050,7 @@ async def setup(bot):
 
 
 bot.run(token)
+
 
 
 
