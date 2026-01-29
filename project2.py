@@ -25,6 +25,7 @@ import os
 import psutil
 import pdb
 #import vacefron
+import re
 
 
 bot = commands.Bot(command_prefix="legobot::", intents=discord.Intents.all())
@@ -857,6 +858,12 @@ async def decode(ctx, *, nombres):
     texte = "".join(chr(int(n)) for n in nombres.split())
     await ctx.send(texte)
 
+
+@bot.command()
+async def chars(ctx, *, nombrese):
+    liste = [int(n) for n in re.findall(r'\d+', nombrese)]
+    textej = "".join(chr(n) for n in liste)
+    await ctx.send(textej)
 
 
 
@@ -2050,6 +2057,7 @@ async def setup(bot):
 
 
 bot.run(token)
+
 
 
 
