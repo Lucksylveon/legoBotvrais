@@ -2058,6 +2058,130 @@ async def setup(bot):
 
 bot.run(token)
 
+#version ia niveau
+
+import discord
+from discord.ext import commands
+import json, math, random, asyncio, time, os
+
+intents = discord.Intents.default()
+intents.message_content = True # Obligatoire pour lire les messages + préfixes
+bot = commands.Bot(command_prefix="legobot::", intents=intents) # Ton préfixe ici
+
+# Variables globales
+users = {}
+cooldowns = {}
+save_lock = asyncio.Lock()
+GUILD_ID = 1008865119943524363
+LEVEL_CHANNEL_ID = 1008906740538019911
+DATA_FILE = 'llevel.json'
+
+@bot.event
+async def on_ready():
+    global users
+    print(f'{bot.user} est connecté')
+    # Charge le JSON 1 seule fois au démarrage
+    try:
+        with open(DATA_FILE, 'r') as f:
+            users = json.load(f)
+    except FileNotFoundError:
+        users = {}
+        print("Aucun fichier llevel.json trouvé, création d'un nouveau")
+
+    # Lance la sauvegarde auto toutes les 30s
+    bot.loop.create_task(save_loop())
+    await bot.tree.sync() # Si tu utilises des slash commands
+
+async def save_loop():
+    while True:
+        await asyncio.sleep(30)
+        async with save_lock:
+            with open(DATA_FILE, 'w') as f:
+                json.dump(users, f, indent=4)
+
+async def update_data(users, user):
+    uid = str(user.id)
+    if uid not in users:
+        users[uid] = {
+            "totalexp": 0,
+            "last_level": 0
+        }
+
+async def add_experience(users, user, exp):
+    uid = str(user.id)
+    users[uid]["totalexp"] += exp
+
+async def level_up(users, user, message):
+    uid = str(user.id)
+    experience = max(0, users[uid]["totalexp"]) # Anti crash si xp négatif
+    new_level = int(0.1 * math.sqrt(experience))
+    old_level = users[uid]["last_level"]
+
+    if new_level > old_level:
+        channel = bot.get_channel(LEVEL_CHANNEL_ID)
+        if channel: # Vérifie que le channel existe toujours
+            await channel.send(f'{user.mention} tu as tellement parlé que tu es niveau : **{new_level}**!')
+        users[uid]["last_level"] = new_level
+
+@bot.event
+async def on_message(message):
+    # 1. Ignore les bots et les DM
+    if message.author.bot or not message.guild:
+        return await bot.process_commands(message)
+
+    # 2. Uniquement sur ton serveur
+    if message.guild.id!= GUILD_ID:
+        return await bot.process_commands(message)
+
+    # 3. Si c'est une commande avec ton préfixe, on donne 0 XP mais on exécute quand même la commande
+    is_command = message.content.startswith("legobot::")
+
+    # 4. Cooldown 60s anti-spam, mais seulement si c'est pas une commande
+    if not is_command:
+        now = time.time()
+        if message.author.id in cooldowns and now - cooldowns[message.author.id] < 60:
+            return await bot.process_commands(message)
+        cooldowns[message.author.id] = now
+
+    # 5. Lock pour éviter que 2 messages écrivent en même temps
+    async with save_lock:
+        await update_data(users, message.author)
+
+        # On donne de l'XP seulement si c'est PAS une commande
+        if not is_command:
+            gain = random.choice([10, 15, 20, 25, 30])
+            await add_experience(users, message.author, gain)
+            await level_up(users, message.author, message)
+
+    # 6. Important : laisse discord.py gérer les commandes préfixe
+    await bot.process_commands(message)
+
+# Exemple commande préfixe
+@bot.command(name="ping")
+async def ping_prefix(ctx):
+    await ctx.send(f"Pong! {round(bot.latency * 1000)}ms")
+
+# Exemple commande /rank slash pour tester
+@bot.tree.command(name="rank", description="Voir ton niveau")
+async def rank_slash(interaction: discord.Interaction, membre: discord.Member = None):
+    membre = membre or interaction.user
+    uid = str(membre.id)
+
+    if uid not in users:
+        return await interaction.response.send_message(f"{membre.mention} n'a pas encore d'XP.")
+
+    xp = users[uid]["totalexp"]
+    lvl = int(0.1 * math.sqrt(xp))
+    next_lvl_xp = int(((lvl + 1) / 0.1) ** 2)
+    xp_needed = next_lvl_xp - xp
+
+    embed = discord.Embed(title=f"Rank de {membre.display_name}", color=0x00ff00)
+    embed.add_field(name="Niveau", value=lvl, inline=True)
+    embed.add_field(name="XP Total", value=xp, inline=True)
+    embed.add_field(name="XP pour lvl suivant", value=f"{xp_needed} XP", inline=False)
+    await interaction.response.send_message(embed=embed)
+
+bot.run(os.getenv("TOKEN")) # Mets ton token dans un.env
 
 
 
