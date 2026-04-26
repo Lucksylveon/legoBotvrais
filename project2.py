@@ -2183,6 +2183,40 @@ async def rank_slash(interaction: discord.Interaction, membre: discord.Member = 
 
 bot.run(os.getenv("TOKEN")) # Mets ton token dans un.env
 
+#la rank ia 
+
+@bot.hybrid_command(name="rank", description="Affiche votre rang ou celui d'un membre")
+async def rank(ctx, member: discord.Member = None):
+    target = member or ctx.author
+    uid = str(target.id)
+
+    if uid not in users or users[uid]["totalexp"] == 0:
+        return await ctx.send(f"{target.mention} n'a pas encore d'XP. Commence par parler!")
+
+    total_xp = users[uid]["totalexp"]
+    current_level = int(0.1 * math.sqrt(total_xp))
+
+    xp_current_lvl = int((current_level / 0.1) ** 2)
+    xp_next_lvl = int(((current_level + 1) / 0.1) ** 2)
+
+    xp_progress = total_xp - xp_current_lvl
+    xp_needed_for_lvl = xp_next_lvl - xp_current_lvl
+    xp_to_next = xp_next_lvl - total_xp
+
+    pos = await Getindex(target)
+
+    embed = discord.Embed(
+        title=f"Rank de {target.display_name}",
+        description=f"XP Total : **{total_xp}**",
+        color=discord.Color.random()
+    )
+    embed.set_thumbnail(url=target.display_avatar.url)
+    embed.add_field(name="Niveau", value=f"**{current_level}**", inline=True)
+    embed.add_field(name="Position", value=f"**#{pos}**", inline=True)
+    embed.add_field(name="Progression", value=f"`{xp_progress} / {xp_needed_for_lvl}` XP", inline=False)
+    embed.add_field(name="Level suivant", value=f"Encore `{xp_to_next}` XP", inline=False)
+
+    await ctx.send(embed=embed)
 
 
 
