@@ -303,6 +303,27 @@ async def userinfo(ctx, idmenbre: discord.User):
 async def uneAutreCommande(ctx):
     ctx.send('cest une autre commande' )
 
+@bot.command()
+async def pslist(ctx):
+    await ctx.send(psutil.pids())
+
+@bot.command()
+async def psinfo(ctx, pid2: int):
+    p = psutil.Process(pid2)
+    await ctx.send(f"nom: {p.name()} \nstatus: {p.status()} \nusername: {p.username} \ncwd: {p.cwd()}, \ncreer as {p.create_time()}")
+
+@bot.command()
+async def psglobal(ctx):
+    prol = (psutil.pids())
+    for pro in list(prol):
+        try:
+            p3 = psutil.Process(pro)
+            await ctx.send(f"id: {p3.pid}, nom: {p3.name()}, status: {p3.status()}, creer le {p3.create_time()}")
+        except psutil.NoSuchProcess:
+            await ctx.send("Erreur: non trouver")
+    await ctx.send("fin")
+
+
 
 @bot.command()
 async def chaine(ctx, commande: str, texte: str, param1=None , param2=None, param3=None):
@@ -348,6 +369,9 @@ async def info(ctx):
     memorytotal = psutil.virtual_memory().total / 2.**30
     #bot_latency = round(self.bot.latency * 1000)
     info_embed = discord.Embed(title="commande info", description="des information sur le bot", color=discord.Color.random())
+	info_embed.add_field(name="id processuce", value=f"{pid}", inline=False)
+    info_embed.add_field(name="nom processuce", value=f"{python_process.name()}", inline=False)
+    info_embed.add_field(name="status processuce", value=f"{python_process.status()}", inline=False)
     info_embed.add_field(name="memory use", value=f"{memoryUse} Mo", inline=False)
     info_embed.add_field(name="total ram", value=f"{memorytotal} Go", inline=False)
     info_embed.add_field(name="pourcentage", value=f"{pourcent} %", inline=False)
@@ -366,7 +390,14 @@ def check_if_it_is_me(interaction: discord.Interaction) -> bool:
 async def only_for_me(interaction: discord.Interaction):
     await interaction.response.send_message('I know you!', ephemeral=True)
 
+@bot.command()
+@commands.is_owner()
+async def shutdown(ctx):
+    robot = os.getpid()
+    await ctx.send("bye")
+    os.kill(robot, signal.CTRL_C_EVENT)
 
+#commande shutdown ne marche pas 
 @bot.command()
 async def visual(ctx):
 	await ctx.send("commande fait sur visual studio code")
