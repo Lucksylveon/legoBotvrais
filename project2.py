@@ -417,6 +417,70 @@ async def shutdown(ctx):
     await ctx.send("bye")
     os.kill(robot, signal.CTRL_C_EVENT)
 
+"""
+@bot.command()
+async def chash(ctx, algo, mess):
+    
+    if algo == "md5":
+        #m = f"{mess}"
+        m = hashlib.md5(mess.endode('utf-8'))
+        hash_hex = m.hexdigest()
+        await ctx.send(hash_hex)
+    elif algo == "sha1":
+        m = hashlib.sha1(mess.endode('utf-8'))
+        hash_hex = m.hexdigest()
+        await ctx.send(hash_hex)
+    elif algo == "sha224":
+        m = hashlib.sha224(mess.endode('utf-8'))
+        hash_hex = m.hexdigest()
+        await ctx.send(hash_hex)
+    elif algo == "sha256":
+        m = hashlib.sha256(mess.endode('utf-8'))
+        hash_hex = m.hexdigest()
+        await ctx.send(hash_hex)
+    elif algo == "sha384":
+        m = hashlib.sha384(mess.endode('utf-8'))
+        hash_hex = m.hexdigest()
+        await ctx.send(hash_hex)
+    elif algo == "sha512":
+        m = hashlib.sha512(mess.endode('utf-8'))
+        hash_hex = m.hexdigest()
+        await ctx.send(hash_hex)
+    else:
+        ctx.send("les aglo en premier argument doive etre md5, sha1,sha224,sha256,sha384,sha512")
+    
+"""
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"ilmanque l'argument `{error.param.name}`.")
+    elif isinstance(error, commands.BadArgument):
+        await ctx.send("argument invalide")
+    else:
+        await ctx.send(f"erreur {error}")
+        raise error
+
+
+@bot.command()
+async def chash(ctx, algo, *, mess):
+    algo = algo.lower()
+
+    weak_algos = ['md5', 'sha1']
+    if algo in weak_algos:
+        await ctx.send(f"attention {algo} est casser pas l'utiliser pour la securiter")
+    
+
+    try:
+        h = hashlib.new(algo)
+        h.update(mess.encode('utf-8'))
+        await ctx.send(h.hexdigest())
+    except ValueError:
+        await ctx.send(f"algo {algo} pas suporter essayer md5, sha1, sha224, sha256, sha384, sha512")
+    except discord.MissingRequiredArgument as e:
+        await ctx.send("il manque un argumern il faut legobot::chash algo un_text")
+
+
 #commande shutdown ne marche pas 
 @bot.command()
 async def visual(ctx):
