@@ -1,44 +1,24 @@
 import discord
 from discord.ext import commands, tasks
+from discord import Streaming, File, RawReactionActionEvent
 import random
-from discord import Streaming
-from discord.utils import get
-from discord import * 
-import time 
-import datetime 
-from datetime import datetime
+import time
 import json
-from discord import file
-from easy_pil import *
+import math
+import asyncio
+import re
+import os
 import typing
 from typing import Optional
-import math
-import asyncio 
-from discord import RawReactionActionEvent
-from discord.utils import find
-from datetime import datetime, timezone, timedelta
-import requests 
-import re
-import os 
+import datetime
+from datetime import datetime as dt, timezone, timedelta
+import requests
 import psutil
-import pdb
-
-
+from easy_pil import Editor, Canvas, Font
 
 bot = commands.Bot(command_prefix="legobot::", intents=discord.Intents.all())
 
 bot.remove_command("help")
-
-
-
-#@bot.event
-#async def on_ready():
-	#changeStatus.start()
-    
-	#print("bot est en ligne")
-    
-	#synced = await bot.tree.sync()
-	#print("syncroniser")
 
 users = {}
 cooldowns = {}
@@ -90,8 +70,6 @@ async def editChannel():
     channeln = bot.get_channel(1111722478616715407)
     enligne = await bot.fetch_guild(1008865119943524363, with_counts=True)
     await channeln.edit(name = f"en ligne {enligne.approximate_presence_count} / {enligne.approximate_member_count} membres")
-
-
 
 async def save_loop():
     while True:
@@ -189,8 +167,6 @@ async def help(ctx):
 
 	await ctx.send(embed=help_embed)
 
-
-
 @bot.command()
 async def help_math(ctx):
 	helpm_embed = discord.Embed(title="help commande de legobot", description="les commande de la chategorie math", color=discord.Color.random())
@@ -203,7 +179,6 @@ async def help_math(ctx):
 	helpm_embed.add_field(name="/soustraction", value="permet de faire une soustraction", inline=False)
 
 	await ctx.send(embed=helpm_embed)
-
 
 @bot.command()
 async def help_info(ctx):
@@ -340,8 +315,6 @@ async def psglobal(ctx):
             await ctx.send("Erreur: non trouver")
     await ctx.send("fin")
 
-
-
 @bot.command()
 async def chaine(ctx, commande: str, texte: str, param1=None , param2=None, param3=None):
     if commande == "upper":
@@ -374,9 +347,6 @@ async def chaine(ctx, commande: str, texte: str, param1=None , param2=None, para
     else:
         await ctx.send("commande pas reconue")
 
-
-
-
 @bot.command()
 async def info(ctx):
     pid = os.getpid()
@@ -406,13 +376,6 @@ def check_if_it_is_me(interaction: discord.Interaction) -> bool:
 @app_commands.check(check_if_it_is_me)
 async def only_for_me(interaction: discord.Interaction):
     await interaction.response.send_message('I know you!', ephemeral=True)
-
-@bot.command()
-@commands.is_owner()
-async def shutdown(ctx):
-    robot = os.getpid()
-    await ctx.send("bye")
-    os.kill(robot, signal.CTRL_C_EVENT)
 
 
 @bot.event
@@ -515,12 +478,6 @@ async def insta_cest_des_connard(ctx):
 async def timea(ctx):
     await ctx.send(time.strftime("%b %a %I %p "))
 
-@bot.command()
-async def debug(ctx, unecommand):
-    #result = pdb.run(unecommand)      
-    await ctx.send(result)
-
-
 @bot.tree.command()
 async def test(interaction: discord.Interaction):
     """Help""" #Description when viewing / commands
@@ -551,11 +508,6 @@ async def on_raw_reaction_add(payload):
                 #print("menbre pas trouver")
         #else:
             #print("role pas trouvé")
-
-
-
-
-
 
 @bot.command()
 async def liens(ctx):
@@ -607,26 +559,6 @@ async def pickspecial(ctx):
 async def picktrois(ctx):
     regarder = ["c'est dessin anime1",  "c'est dessin anime", "c'est dessin anime2","scienceetonante", "scienceetonante2", "scienceetonante1","leotechmaker", "leotechmaker2", "leotechmaker1", "polo","choix avec 3 de chaque 2 pick et trash", "polo1", "codelyoko", "docseven", "c'est dessin anime", "peux inporte", "scienceetonante", "pick", "leotechmaker", "pick"]
     await ctx.send(random.choice(regarder))
-
-
-@bot.command()
-@commands.is_owner()
-async def poloc(ctx):
-	regarders = ["fall guy", "mario maker", "mario partt", "roblox", "splix.io", "sliter.io", "agario.io", "clustertruck", "housse flipper", "geometry dash", "minecraft", "ramdom"]
-	await ctx.send(random.choice(regarders))
-
-@bot.command()
-@commands.is_owner()
-async def cdac(ctx):
-	regarders = ["top10", "soloal", "thematique", "classique", "classique anne sport", "ramdom"]
-	await ctx.send(random.choice(regarders))
-
-
-@bot.command()
-@commands.is_owner()
-async def trashc(ctx):
-	regarderse = ["principal", "bandicoot", "science", "peut importe"]
-	await ctx.send(random.choice(regarderse))
 
 
 @bot.command()
@@ -878,8 +810,6 @@ async def chars(ctx, *, nombrese):
     await ctx.send(textej)
 
 #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 async def update_data(users, user):
     uid = str(user.id)
@@ -1106,34 +1036,6 @@ class Auto_role(discord.ui.View):
 async def auto_roles(ctx):
     rembed = discord.Embed(title= "auto role", description= "appuis pour avoir le role indiquer sur le bouton")
     await ctx.send(embed = rembed, view = Auto_role())
-
-
-#leaderboard = {}
-#total=[]
-#    for user in list(users):
-#        name = int(user)
-#        total_amt = users[str(user)]['totalexp']
-#        total_amt2 = users[str(user)]['level']
-#        leaderboard[total_amt] = name
-#        total.append(total_amt)
-#
-#   total = sorted(total,reverse=True)
-#
-#   index = 1
-#    for amt in total:
-#        id_ = leaderboard[amt]
-#    
-#        member = bot.get_user(id_)
-#
-#        if ctx.author = member:
-#            position = index
-#        else:
-#            index += 1
-
-
-
-async def setup(bot):
-    await bot.add_cog(Pong(bot))
 
 
 bot.run(token)
