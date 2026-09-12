@@ -22,7 +22,7 @@ import re
 import os 
 import psutil
 import pdb
-import re
+
 
 
 bot = commands.Bot(command_prefix="legobot::", intents=discord.Intents.all())
