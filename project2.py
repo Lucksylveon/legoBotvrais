@@ -13,9 +13,7 @@ from easy_pil import *
 import typing
 from typing import Optional
 import math
-import asyncio
-import Pong_cogs
-from Pong_cogs import Pong 
+import asyncio 
 from discord import RawReactionActionEvent
 from discord.utils import find
 from datetime import datetime, timezone, timedelta
@@ -24,7 +22,6 @@ import re
 import os 
 import psutil
 import pdb
-#import vacefron
 import re
 
 
