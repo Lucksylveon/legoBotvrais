@@ -1,0 +1,10 @@
+services:
+  legobot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: legobot
+    container_name: legobot
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
