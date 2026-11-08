@@ -1,0 +1,4 @@
+discord.py
+easy-pil
+requests
+psutil
